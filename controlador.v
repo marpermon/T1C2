@@ -1,0 +1,102 @@
+//Mealy
+module controlador(
+	Clk, Reset, Pin, Vehiculo, Termino,	Cerrado, Abierto, Alarma, Bloqueo
+);
+
+input Clk, Reset, Vehiculo, Termino;
+input [7:0] Pin;
+output reg Alarma, Cerrado, Abierto, Bloqueo;
+
+
+/// hasta aqui bien
+//reg C_Cerrada, C_Abierta, Bloquear_P;
+//reg Verificar_Pin; //Verifica si el pin es correcto
+
+reg [2:0] state;
+reg [2:0] nxt_state;//mal
+reg [1:0] count0; 
+reg [1:0] nxt_count0;
+           
+// Asignación de estados
+//parametros para usarlos como variables
+parameter C_Cerrada = 3'b001; //Compuerta cerrada
+parameter C_Abierta = 3'b010; //Compuerta abierta
+parameter C_Bloqueada = 3'b100; //Bloquear
+parameter Pin_correcto = 8'b00001000;
+parameter Pin_espera = 8'b0;
+
+//Memoria de estados
+always @(posedge Clk) begin
+  if (Reset) begin
+    state  <= C_Cerrada; // si hay un reset empezamos con la puerta cerrada
+    count0 <= 2'b0; //y con el contador en 0
+  end else begin
+    state  <= nxt_state;  //sino, vamos al proximo estado en memoria
+    count0 <= nxt_count0;  
+  end
+end 
+
+//logica combinacional
+always @(*) begin
+  //por defecto
+  nxt_state = state;  
+  nxt_count0 = count0;
+
+  case (EstPres)
+    C_Cerrada: begin //si empezamos con la compuerta cerrada
+        Cerrado=1'b1; //output
+        Abierto=1'b0;
+        Alarma=1'b0;
+        Bloqueo=1'b0;
+        if (Vehiculo) begin
+          if (Pin==Pin_correcto) ProxEstado = C_Abierta; //si hay v y el pin es correcto
+              //nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
+          else begin
+              if (Pin!=Pin_espera) begin 
+                if (count0<2) begin
+                    ProxEstado = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
+                    nxt_count0 = count0+1;
+                  end
+                else begin
+                    ProxEstado = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es 2, significa que este el el tercer fallo
+                    Alarma=1'b1; //output
+                    //no sumamos mas porque no es necesario
+                  end
+              end
+              //si hay 8 ceros en el pin, no hacer nada, porque no se ha ingresado nada
+            end
+        end
+        //no hay else porque si no hay v, la compuerta sigue cerrada
+      end
+
+    C_Abierta: 	begin
+      Cerrado=1'b0; //output
+      Abierto=1'b1;
+      Alarma=1'b0;
+      Bloqueo=1'b0;
+      nxt_count0 = 2'b00; //cuando se abre la puerta se limpia el contador*
+      if (Termino)
+        begin
+          Abierto=1'b0; 
+          Cerrado=1'b1; //cerramos la puerta  
+          begin
+            if(Vehiculo) ProxEstado = C_Bloqueada;//si termino de entrar y hay vehiculo AL MISMO TIEMPO
+            else ProxEstado = C_Cerrada;//si termino de salir y no hay vehiculo
+          end
+        end
+        // no hay else porque si no ha terminado de salir, la compuerta sigue abierta
+    end
+    C_Bloqueada: begin
+      Cerrado=1'b0; //output
+      Abierto=1'b0;
+      Alarma=1'b1;
+      Bloqueo=1'b1; 
+      if (Pin==Pin_correcto) ProxEstado = C_Abierta; //si el pin es correcto se abre la puerta
+        //nxt_count0 = 2'b00; 
+      // no hay else porque, si el pin no es correcto, sigue bloqueada
+    end
+    default nxt_state = state;
+  endcase  
+end
+
+endmodule
