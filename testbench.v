@@ -3,8 +3,8 @@
                                         
 // Testbench Code Goes here
 module controlador_tb;
-
-  wire Clk, Reset, Pin, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo;
+  wire [7:0] Pin;
+  wire Clk, Reset, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo;
 
   initial begin
 	$dumpfile("resultados.vcd");

@@ -42,23 +42,23 @@ always @(*) begin
   nxt_state = state;  
   nxt_count0 = count0;
 
-  case (EstPres)
+  case (state)
     C_Cerrada: begin //si empezamos con la compuerta cerrada
         Cerrado=1'b1; //output
         Abierto=1'b0;
         Alarma=1'b0;
         Bloqueo=1'b0;
         if (Vehiculo) begin
-          if (Pin==Pin_correcto) ProxEstado = C_Abierta; //si hay v y el pin es correcto
+          if (Pin==Pin_correcto) nxt_state = C_Abierta; //si hay v y el pin es correcto
               //nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
           else begin
               if (Pin!=Pin_espera) begin 
                 if (count0<2) begin
-                    ProxEstado = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
+                    nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
                     nxt_count0 = count0+1;
                   end
                 else begin
-                    ProxEstado = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es 2, significa que este el el tercer fallo
+                    nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es 2, significa que este el el tercer fallo
                     Alarma=1'b1; //output
                     //no sumamos mas porque no es necesario
                   end
@@ -80,8 +80,8 @@ always @(*) begin
           Abierto=1'b0; 
           Cerrado=1'b1; //cerramos la puerta  
           begin
-            if(Vehiculo) ProxEstado = C_Bloqueada;//si termino de entrar y hay vehiculo AL MISMO TIEMPO
-            else ProxEstado = C_Cerrada;//si termino de salir y no hay vehiculo
+            if(Vehiculo) nxt_state = C_Bloqueada;//si termino de entrar y hay vehiculo AL MISMO TIEMPO
+            else nxt_state = C_Cerrada;//si termino de salir y no hay vehiculo
           end
         end
         // no hay else porque si no ha terminado de salir, la compuerta sigue abierta
@@ -91,7 +91,7 @@ always @(*) begin
       Abierto=1'b0;
       Alarma=1'b1;
       Bloqueo=1'b1; 
-      if (Pin==Pin_correcto) ProxEstado = C_Abierta; //si el pin es correcto se abre la puerta
+      if (Pin==Pin_correcto) nxt_state = C_Abierta; //si el pin es correcto se abre la puerta
         //nxt_count0 = 2'b00; 
       // no hay else porque, si el pin no es correcto, sigue bloqueada
     end
