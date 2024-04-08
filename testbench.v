@@ -9,7 +9,7 @@ module controlador_tb;
   initial begin
 	$dumpfile("resultados.vcd");
 	$dumpvars(-1, U0);
-	$monitor ("Clk=%b, Reset=%b, Pin=%b, Vehiculo=%b, Termino=%b, Cerrado=%b, Abierto=%b, Alarma=%b, Bloqueo=%b, contador=%b",
+	$monitor ("Clk=%b, Reset=%b, Pin=%b, Vehiculo=%b, Termino=%b, Cerrado=%b, Abierto=%b, Alarma=%b, Bloqueo=%b",
   Clk, Reset, Pin, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo);
   end
 

@@ -22,7 +22,7 @@ parameter medio_T = 5;
     #5 Reset = 1; //5. reseteamos la máquina
     #10 Reset = 0; //15.
     #5 Vehiculo = 1; //llega vehiculo
-    #5 Pin = 8'b1; //introduce pin incorrecto
+    #5 Pin = 8'b11111111; //introduce pin incorrecto
     #10 Pin = Pin_espera;//se apaga la entrada
     #200 $finish;
   end
