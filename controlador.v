@@ -53,7 +53,7 @@ always @(*) begin
               //nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
           else begin
               if (Pin!=Pin_espera) begin 
-                if (count0<2) begin
+                if (count0<3) begin
                     nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
                     nxt_count0 = count0+1;
                   end
@@ -63,7 +63,11 @@ always @(*) begin
                     //no sumamos mas porque no es necesario
                   end
               end
+              else begin
+                if (count0>=3) Alarma=1'b1;
+              end
               //si hay 8 ceros en el pin, no hacer nada, porque no se ha ingresado nada
+              //a menos que el contador sea 3, ahí encendemos la alarma
             end
         end
         //no hay else porque si no hay v, la compuerta sigue cerrada
