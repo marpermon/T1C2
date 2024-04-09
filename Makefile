@@ -1,3 +1,4 @@
-tarea: iverilog -o salida testbench.v #Corre Icarus 
-	   vvp salida #Corre la simulación
-	   gtkwave resultados.vcd #Abre las formas de onda
+tarea: testbench.v
+	iverilog -o salida testbench.v  
+	vvp salida #Corre la simulación 
+	gtkwave resultados.vcd 
