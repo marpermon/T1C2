@@ -4,13 +4,13 @@
 // Testbench Code Goes here
 module controlador_tb;
   wire [7:0] Pin;
-  wire Clk, Reset, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo;
+  wire Clk, Reset, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo, enterPin;
 
   initial begin
 	$dumpfile("resultados.vcd");
 	$dumpvars(-1, U0);
-	$monitor ("Clk=%b, Reset=%b, Pin=%b, Vehiculo=%b, Termino=%b, Cerrado=%b, Abierto=%b, Alarma=%b, Bloqueo=%b",
-  Clk, Reset, Pin, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo);
+	$monitor ("Clk=%b, Reset=%b, Pin=%b, Vehiculo=%b, Termino=%b, Cerrado=%b, Abierto=%b, Alarma=%b, Bloqueo=%b,  enterPin=%b",
+  Clk, Reset, Pin, Vehiculo, Termino, Cerrado, Abierto, Alarma, Bloqueo, enterPin);
   end
 
   controlador U0 (
@@ -22,7 +22,8 @@ module controlador_tb;
     .Cerrado (Cerrado), 
     .Abierto (Abierto), 
     .Alarma (Alarma), 
-    .Bloqueo (Bloqueo)
+    .Bloqueo (Bloqueo),
+    .enterPin (enterPin)
   );
 
   probador P0 (
@@ -34,7 +35,8 @@ module controlador_tb;
     .Cerrado (Cerrado), 
     .Abierto (Abierto), 
     .Alarma (Alarma), 
-    .Bloqueo (Bloqueo)
+    .Bloqueo (Bloqueo),
+    .enterPin (enterPin)
   );
 
 endmodule

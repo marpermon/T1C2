@@ -1,9 +1,9 @@
 //Mealy
 module controlador(
-	Clk, Reset, Pin, Vehiculo, Termino,	Cerrado, Abierto, Alarma, Bloqueo
+	Clk, Reset, Pin, Vehiculo, Termino,	Cerrado, Abierto, Alarma, Bloqueo, enterPin
 );
 
-input Clk, Reset, Vehiculo, Termino;
+input Clk, Reset, Vehiculo, Termino, enterPin;
 input [7:0] Pin;
 output reg Alarma, Cerrado, Abierto, Bloqueo;
 
@@ -22,8 +22,9 @@ reg [1:0] nxt_count0;
 parameter C_Cerrada = 3'b001; //Compuerta cerrada
 parameter C_Abierta = 3'b010; //Compuerta abierta
 parameter C_Bloqueada = 3'b100; //Bloquear
+
 parameter Pin_correcto = 8'b00001000;
-parameter Pin_espera = 8'b0;
+
 
 //Memoria de estados
 always @(posedge Clk) begin
@@ -49,27 +50,27 @@ always @(*) begin
         Alarma=1'b0;
         Bloqueo=1'b0;
         if (Vehiculo) begin
-          if (Pin==Pin_correcto) nxt_state = C_Abierta; //si hay v y el pin es correcto
-              //nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
-          else begin
-              if (Pin!=Pin_espera) begin 
-                if (count0<3) begin
-                    nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
-                    nxt_count0 = count0+1;
-                  end
-                else begin
-                    nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es 2, significa que este el el tercer fallo
-                    Alarma=1'b1; //output
-                    //no sumamos mas porque no es necesario
-                  end
-              end
+          if (enterPin) begin
+            if (Pin==Pin_correcto) nxt_state = C_Abierta; //si hay v y el pin es correcto
+                //nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
+            else begin
+              if (count0<3) begin
+                  nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
+                  nxt_count0 = count0+1;
+                end
               else begin
-                if (count0>=3) Alarma=1'b1;
-              end
-              //si hay 8 ceros en el pin, no hacer nada, porque no se ha ingresado nada
-              //a menos que el contador sea 3, ahí encendemos la alarma
+                  nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es 2, significa que este el el tercer fallo
+                  Alarma=1'b1; //output
+                  //no sumamos mas porque no es necesario
+                end 
+              end   
             end
-        end
+          else begin
+            if (count0>=3) Alarma=1'b1;
+          end
+          //si no se ha dado enter, no hacer nada, porque no se ha ingresado nada
+          //a menos que el contador sea 3, ahí encendemos la alarma
+          end
         //no hay else porque si no hay v, la compuerta sigue cerrada
       end
 

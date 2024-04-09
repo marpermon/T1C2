@@ -1,15 +1,15 @@
 module probador (
   Clk, Reset,
-	Pin, Vehiculo, Termino,
+	Pin, Vehiculo, Termino, enterPin,
 	Cerrado, Abierto, Alarma, Bloqueo
   );
 
-output reg Clk, Reset, Vehiculo, Termino;
+output reg Clk, Reset, Vehiculo, Termino, enterPin;
 output reg [7:0] Pin;
 input Alarma, Cerrado, Abierto, Bloqueo;
 
 parameter Pin_correcto = 8'b00001000;
-parameter Pin_espera = 8'b0;
+parameter Pin_0 = 8'b0;
 parameter medio_T = 5;
 
 
@@ -18,20 +18,23 @@ parameter medio_T = 5;
     Reset = 0;
     Vehiculo = 0;
     Termino = 0;
-    Pin=Pin_espera;
+    enterPin = 0;
+    Pin=Pin_0;
     #5 Reset = 1; //5. reseteamos la máquina
     #10 Reset = 0; //15.
     #5 Vehiculo = 1; //llega vehiculo
-    #3 Pin = 8'b11111111; //introduce pin incorrecto
-    #10 Pin = Pin_espera;//se apaga la entrada
-    #3 Pin = 8'b11111111; //introduce pin incorrecto
-    #10 Pin = Pin_espera;//se apaga la entrada
-    #3 Pin = 8'b11111111; //introduce pin incorrecto
-    #10 Pin = Pin_espera;//se apaga la entrada
-    #3 Pin = 8'b11111111; //introduce pin incorrecto
-    #10 Pin = Pin_espera;//se apaga la entrada
+    #5 {enterPin,Pin}  = 9'b111111111; //introduce pin incorrecto
+    #10 enterPin = 0;
+    #10 Pin = Pin_0;//probamos que no pase nada si cambia el pin aunque no esté prendido enter
+    #10 {enterPin,Pin}  = 9'b111111111; //introduce pin incorrecto por segunda vez
+    #10 enterPin = 0;
+    #10 enterPin = 1; //introduce pin incorrecto por tercera vez
+    #10 enterPin = 0;
+    #10 enterPin = 1;
+    #10 enterPin = 0; //introduce pin incorrecto por cuarta vez
+    /*
     #2 Pin = Pin_correcto; //introduce pin incorrecto
-    #10 Pin = Pin_espera;//se apaga la entrada
+    #10 Pin = Pin_0;//se apaga la entrada*/
     #20 $finish;
   end
 
