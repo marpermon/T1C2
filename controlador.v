@@ -23,7 +23,7 @@ parameter C_Cerrada = 3'b001; //Compuerta cerrada
 parameter C_Abierta = 3'b010; //Compuerta abierta
 parameter C_Bloqueada = 3'b100; //Bloquear
 
-parameter Pin_correcto = 8'b00001000;
+parameter Pin_correcto = 8'b00010000;
 
 
 //Memoria de estados
@@ -70,7 +70,7 @@ always @(*) begin
           end
           //si no se ha dado enter, no hacer nada, porque no se ha ingresado nada
           //a menos que el contador sea 3, ahí encendemos la alarma
-          end
+        end
         //no hay else porque si no hay v, la compuerta sigue cerrada
       end
 
@@ -91,13 +91,15 @@ always @(*) begin
         end
         // no hay else porque si no ha terminado de salir, la compuerta sigue abierta
     end
+
     C_Bloqueada: begin
       Cerrado=1'b0; //output
       Abierto=1'b0;
       Alarma=1'b1;
       Bloqueo=1'b1; 
-      if (Pin==Pin_correcto) nxt_state = C_Abierta; //si el pin es correcto se abre la puerta
-        //nxt_count0 = 2'b00; 
+      if (enterPin) begin
+        if (Pin==Pin_correcto) nxt_state = C_Abierta; //si el pin es correcto se abre la puerta
+      end  //nxt_count0 = 2'b00; 
       // no hay else porque, si el pin no es correcto, sigue bloqueada
     end
     default nxt_state = state;

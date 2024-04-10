@@ -8,7 +8,7 @@ output reg Clk, Reset, Vehiculo, Termino, enterPin;
 output reg [7:0] Pin;
 input Alarma, Cerrado, Abierto, Bloqueo;
 
-parameter Pin_correcto = 8'b00001000;
+parameter Pin_correcto = 8'b00010000;
 parameter Pin_0 = 8'b0;
 parameter medio_T = 5;
 
@@ -32,10 +32,17 @@ parameter medio_T = 5;
     #10 enterPin = 0;
     #10 enterPin = 1;
     #10 enterPin = 0; //introduce pin incorrecto por cuarta vez
-    /*
-    #2 Pin = Pin_correcto; //introduce pin incorrecto
-    #10 Pin = Pin_0;//se apaga la entrada*/
-    #20 $finish;
+    #10 {enterPin,Pin}  = 9'b100000000+Pin_correcto;
+    #10 enterPin = 0;
+    #10 {Vehiculo, Termino} = 2'b01; //si la señal de vehiculo se apaga, es logico de que la que termino de entrar tambien se encienda al mismo tiempo
+    //volvemos al estado cerrado
+    //*menos de dos equivocaciones* arreglar este
+    #5 Vehiculo = 1; //llega nuevo vehiculo
+    #15 {enterPin,Pin}  = 9'b111111111; //introduce pin incorrecto sòlo una vez
+    #10 enterPin = 0;
+    #10 {enterPin,Pin}  = 9'b100000000+Pin_correcto;
+    #10 enterPin = 0;
+    #40 $finish;
   end
 
   always begin
