@@ -29,12 +29,13 @@ parameter medio_T = 5;
     #10 enterPin = 0;
     #25 {Vehiculo, Termino} = 2'b01; //si la señal de vehiculo se apaga, es logico de que la que termino de entrar tambien se encienda al mismo tiempo
     #10 Termino = 0; //se apaga termino, dura sòlo un ciclo de relog
-     //volvemos al estado cerrado
+    //volvemos al estado cerrado
     //*pin incorrecto +de 3 veces*
     #10 Vehiculo = 1; //llega vehiculo
     #5 {enterPin,Pin}  = 9'b111111111; //introduce pin incorrecto
     #10 enterPin = 0;
-    #10 Pin = Pin_0;//probamos que no pase nada si cambia el pin aunque no esté prendido enter
+    //*probamos que no pase nada si cambia el pin aunque no esté prendido enter*
+    #10 Pin = Pin_0;
     #10 {enterPin,Pin}  = 9'b111111111; //introduce pin incorrecto por segunda vez
     #10 enterPin = 0;
     #10 enterPin = 1; //introduce pin incorrecto por tercera vez

@@ -51,8 +51,11 @@ always @(*) begin
         Bloqueo=1'b0;
         if (Vehiculo) begin
           if (enterPin) begin
-            if (Pin==Pin_correcto) nxt_state = C_Abierta; //si hay v y el pin es correcto
-                //nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
+            if (Pin==Pin_correcto) begin
+              nxt_state = C_Abierta; //si hay v y el pin es correcto
+              nxt_count0 = 2'b00; //Cuando se ingresa la clave correcta se debe limpiar el contador de intentos incorrectos
+            end
+                
             else begin
               if (count0<3) begin
                   nxt_state = C_Cerrada; //si hay v pero el pin es incorrecto y el contador es menor a 2
@@ -98,8 +101,11 @@ always @(*) begin
       Alarma=1'b1;
       Bloqueo=1'b1; 
       if (enterPin) begin
-        if (Pin==Pin_correcto) nxt_state = C_Abierta; //si el pin es correcto se abre la puerta
-      end  //nxt_count0 = 2'b00; 
+        if (Pin==Pin_correcto) begin 
+          nxt_state = C_Abierta; //si el pin es correcto se abre la puerta
+          nxt_count0 = 2'b00; 
+        end
+      end  
       // no hay else porque, si el pin no es correcto, sigue bloqueada
     end
     default nxt_state = state;
