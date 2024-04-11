@@ -58,9 +58,8 @@ parameter medio_T = 5;
     #10 enterPin = 0; 
     #10 {enterPin,Pin}  = 9'b100000000+Pin_correcto;
     #10 enterPin = 0; //se vuelve a abrir la compuerta
+    #10 {Vehiculo, Termino} = 2'b01; //ya entro el vehiculo
     //Prueba 5: *Botón enter*
-    #10 Reset = 1; //5. reseteamos la máquina
-    #10 Reset = 0; //15.
     #10 Vehiculo = 1; //llega vehiculo
     #10 Pin = Pin_0;//pin incorrecto
     #20 Pin = Pin_correcto;//pin correcto
@@ -72,6 +71,20 @@ parameter medio_T = 5;
     #20 Pin = Pin_correcto;//pin correcto
     #20 enterPin = 1;
     #10 enterPin = 0;
+    //Prueba 6: *Reset*
+    #10 {Vehiculo, Termino} = 2'b11; //bloqueamos la compuerta
+    #10 Termino = 0;
+    #20 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b111100000000+Pin_correcto;
+    #10 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b0;
+    //estamos en el estado cerrado
+    #20 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b111100000000+Pin_correcto;
+    #10 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b0;
+    //volvemos a abrir la compuerta
+    #10 Vehiculo = 1;
+    #10 {enterPin,Pin}  = 9'b100000000+Pin_correcto;
+    #10 enterPin = 0;
+    #20 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b111100000000+Pin_correcto;
+    #10 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b0;
     #40 $finish;
   end
 
