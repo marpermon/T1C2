@@ -1,4 +1,8 @@
-//Mealy
+/*Paulette Pérez Monge- Carnet B95916
+Tarea 1 - Digitales 2
+Controlador para parqueo 
+Maquina Mealy */
+
 module controlador(
 	Clk, Reset, Pin, Vehiculo, Termino,	Cerrado, Abierto, Alarma, Bloqueo, enterPin
 );
@@ -89,10 +93,10 @@ always @(*) begin
           Cerrado=1'b1; //cerramos la puerta  
           begin
             if(Vehiculo) nxt_state = C_Bloqueada;//si termino de entrar y hay vehiculo AL MISMO TIEMPO
-            else nxt_state = C_Cerrada;//si termino de salir y no hay vehiculo
+            else nxt_state = C_Cerrada;//si termino de entrar y no hay vehiculo
           end
         end
-        // no hay else porque si no ha terminado de salir, la compuerta sigue abierta
+        // no hay else porque si no ha terminado de entrar, la compuerta sigue abierta
     end
 
     C_Bloqueada: begin
