@@ -73,7 +73,7 @@ parameter medio_T = 5;
     #10 enterPin = 0;
     //Prueba 6: *Reset*
     #10 {Vehiculo, Termino} = 2'b11; //bloqueamos la compuerta
-    #10 Termino = 0;
+    #10 {Vehiculo, Termino} = 2'b00;
     #20 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b111100000000+Pin_correcto;
     #10 {Reset,Vehiculo,Termino,enterPin,Pin}=12'b0;
     //estamos en el estado cerrado
